@@ -74,16 +74,13 @@ void VertexSpecification() {
     const std::vector<GLfloat> vertexPosition{
         // x y z
         -0.8f, -0.8f, 0.0f, // vertex 1
-        0.8f,  -0.8f, 0.0f, // vertex 2
-        0.0f,  0.8f,  0.0f, // vertex 3
-    };
+        1.0f,  0.0f,  0.0f, // vertex color 1
 
-    // another attribute for vertex colores
-    const std::vector<GLfloat> vertexColors{
-        // x y z
-        1.0f, 0.0f, 0.0f, // vertex color 1
-        0.0f, 0.0f, 1.0f, // vertex color 2
-        0.0f, 1.0f, 0.0f, // vertex color 3
+        0.8f,  -0.8f, 0.0f, // vertex 2
+        0.0f,  0.0f,  1.0f, // vertex color 2
+
+        0.0f,  0.8f,  0.0f, // vertex 3
+        0.0f,  1.0f,  0.0f, // vertex color 3
     };
 
     // To set this up on our GPU we have to setup Vertex Array and Buffer Object
@@ -96,25 +93,24 @@ void VertexSpecification() {
     glBindVertexArray(gVertexArrayObject);
 
     // Now we will generate our VBOs
-    glGenBuffers(1, &gVertexBufferObject);
+    glGenBuffers(2, &gVertexBufferObject);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
     glBufferData(GL_ARRAY_BUFFER, vertexPosition.size() * sizeof(GLfloat),
                  vertexPosition.data(), GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0); // which attribute we wanna access
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE,
+        sizeof(GLfloat) * 6, // The stride is how many we have to jump to reach
+                             // the next starting index, in this case it is 6
+        (void *)0);
     // After previous two commands, out VAO knows how to work with VBO
-
-    // setup up and binding color buffer
-    glGenBuffers(1, &gVertexBufferColorObject);
-    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferColorObject);
-    glBufferData(GL_ARRAY_BUFFER, vertexColors.size() * sizeof(GLfloat),
-                 vertexColors.data(), GL_STATIC_DRAW);
 
     // linking and working with color VBO
     glEnableVertexAttribArray(
         1); // which attribute we wanna access. 1 Represents our color VBO
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6,
+                          (GLvoid *)(sizeof(GLfloat) * 3));
 
     // Following is clean up code
     glBindVertexArray(0); // previously we bind to gVertexArrayObject now we
