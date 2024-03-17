@@ -72,15 +72,26 @@ void InitializeProgram() {
 void VertexSpecification() {
     // Lives on our CPU. We have to make it live on the GPU
     const std::vector<GLfloat> vertexPosition{
-        // x y z
-        -0.8f, -0.8f, 0.0f, // vertex 1
-        1.0f,  0.0f,  0.0f, // vertex color 1
+        // x y z | r g b
+        // First Triangle
+        0.8f, -0.8f, 0.0f, // Top left
+        0.0f, 0.0f, 1.0f,  // vertex color 2
 
-        0.8f,  -0.8f, 0.0f, // vertex 2
-        0.0f,  0.0f,  1.0f, // vertex color 2
+        -0.8f, -0.8f, 0.0f, // Bottom left
+        1.0f, 0.0f, 0.0f,   // vertex color 1
 
-        0.0f,  0.8f,  0.0f, // vertex 3
-        0.0f,  1.0f,  0.0f, // vertex color 3
+        -0.8f, 0.8f, 0.0f, // Bottom right
+        0.0f, 1.0f, 0.0f,  // vertex color 3
+
+        // Second triangle
+        0.8f, -0.8f, 0.0f, // Top left
+        0.0f, 0.0f, 1.0f,  // vertex color 2
+
+        -0.8f, 0.8f, 0.0f, // Bottom right
+        0.0f, 1.0f, 0.0f,  // vertex color 3
+
+        0.8f, 0.8f, 0.0f, // Top right
+        0.0f, 1.0f, 0.0f, // vertex color 3
     };
 
     // To set this up on our GPU we have to setup Vertex Array and Buffer Object
@@ -212,7 +223,7 @@ void Draw() {
     glBindVertexArray(gVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3); // draw triangles. We start from 0 and
+    glDrawArrays(GL_TRIANGLES, 0, 6); // draw triangles. We start from 0 and
                                       // draw 3 triangles (we gave 3 vertices)
 }
 
