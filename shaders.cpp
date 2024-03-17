@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_video.h>
+#include <fstream>
 #include <iostream>
 #include <vector>
 
@@ -27,22 +28,6 @@ GLuint gVertexBufferObject = 0; // Represents our VBO
 // a pipeline to compile our Vertex and Fragment shader
 // Program == Graphics pipeline
 GLuint gGraphicsPipelineShaderProgram = 0;
-
-const std::string gVertexShaderSource =
-    "#version 460 core\n"
-    "in vec4 position;\n"
-    "void main()\n"
-    "{\n"
-    "  gl_Position = vec4(position.x, position.y, position.z, position.w);\n"
-    "}\n";
-
-const std::string gFragmentShaderSource =
-    "#version 460 core\n"
-    "out vec4 color;\n"
-    "void main()\n"
-    "{\n"
-    "  color = vec4(1.0f, 0.5f, 0.0f, 1.0f);\n"
-    "}\n";
 
 void error(const std::string message) {
     std::cerr << "[ERROR] " + message << std::endl;
@@ -117,6 +102,22 @@ void VertexSpecification() {
     glDisableVertexAttribArray(0);
 }
 
+std::string loadShaderAsString(const std::string &filename) {
+    std::string result{""}, line{""};
+
+    std::ifstream file(filename.c_str());
+
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            result += line + '\n';
+        }
+
+        file.close();
+    }
+
+    return result;
+}
+
 GLuint compileShader(GLuint type, const std::string &shaderSrc) {
     GLuint shaderObject = 0;
 
@@ -155,8 +156,13 @@ GLuint createShaderProgram(const std::string &vertexShaderSrc,
 }
 
 void CreateGraphicsPipeline() {
+    const std::string vertexShaderSource =
+        loadShaderAsString("./shaders/vert.glsl");
+    const std::string fragmentShaderSource =
+        loadShaderAsString("./shaders/frag.glsl");
+
     gGraphicsPipelineShaderProgram =
-        createShaderProgram(gVertexShaderSource, gFragmentShaderSource);
+        createShaderProgram(vertexShaderSource, fragmentShaderSource);
 }
 
 void Input() {
