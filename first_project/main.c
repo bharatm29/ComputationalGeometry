@@ -103,15 +103,16 @@ int main() {
                 GuiGetStyle(COMBOBOX, COMBO_BUTTON_WIDTH) +
                 GuiGetStyle(COMBOBOX, COMBO_BUTTON_SPACING) + defaultFontSize;
 
-            GuiComboBox((Rectangle){(WIDTH - comboBoxWidth) / 2.0, HEIGHT / 2.0 - 15,
-                                    comboBoxWidth, 30},
+            GuiComboBox((Rectangle){(WIDTH - comboBoxWidth) / 2.0,
+                                    HEIGHT / 2.0 - 15, comboBoxWidth, 30},
                         TextJoin(sortingTechs,
                                  sizeof(sortingTechs) / sizeof(sortingTechs[0]),
                                  ";"),
                         &selectedSortTech);
 
             const char btnTxt[] = "Sort!";
-            const int sortButtonWidth = 10 + MeasureText(btnTxt, defaultFontSize) + 10;
+            const int sortButtonWidth =
+                10 + MeasureText(btnTxt, defaultFontSize) + 10;
 
             const bool isSortButtonPressed =
                 GuiButton((Rectangle){(WIDTH - sortButtonWidth) / 2.0,
@@ -154,10 +155,61 @@ int main() {
         case SELECTION_SORT: {
             ClearBackground(WHITE);
             DrawText("Selection Sort", 10, 5, 20, RED);
+
+            if (!sorted && framCounter == waitTime) {
+                framCounter = 0;
+                if (i < size) {
+                    int minIdx = i;
+                    for (int j = i + 1; j < size; j++) {
+                        if (arr[j] < arr[minIdx]) {
+                            minIdx = j;
+                        }
+                    }
+
+                    const int temp = arr[minIdx];
+                    arr[minIdx] = arr[i];
+                    arr[i] = temp;
+
+                    renderArray(arr, size);
+
+                    i++;
+                } else {
+                    sorted = true;
+                }
+            } else {
+                renderArray(arr, size);
+
+                framCounter++;
+            }
         } break;
         case INSERTION_SORT: {
             ClearBackground(WHITE);
             DrawText("Insertion Sort", 10, 5, 20, RED);
+
+            if (!sorted && framCounter == waitTime) {
+                framCounter = 0;
+                if (i < size) {
+                    const int key = arr[i];
+                    int j = i - 1;
+
+                    while (j >= 0 && arr[j] > key) {
+                        arr[j + 1] = arr[j];
+                        j--;
+                    }
+
+                    arr[j + 1] = key;
+
+                    renderArray(arr, size);
+
+                    i++;
+                } else {
+                    sorted = true;
+                }
+            } else {
+                renderArray(arr, size);
+
+                framCounter++;
+            }
         } break;
         default: {
             ClearBackground(WHITE);
