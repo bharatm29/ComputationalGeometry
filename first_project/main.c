@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <string.h>
 
 #define RAYGUI_IMPLEMENTATION
 #include "../raygui/raygui.h"
@@ -26,6 +27,20 @@ void renderArray(const int arr[], const int size) {
     }
 }
 
+const char *getLongestWord(const char **arr, const int size) {
+    int mx = 0;
+    const char *s = NULL;
+
+    for (int i = 0; i < size; i++) {
+        if (mx < strlen(arr[i])) {
+            mx = strlen(arr[i]);
+            s = arr[i];
+        }
+    }
+
+    return s;
+}
+
 int main() {
     int arr[] = {20, 1, 3, 8, 4, 16, 12, 9, 5, 2, 11, 0, 19, 12};
     const int size = sizeof(arr) / sizeof(arr[0]);
@@ -39,12 +54,15 @@ int main() {
 
     SetTargetFPS(60);
 
-    int i = 0;
+    int curIdx = 0;
     bool sorted = false;
     bool render = false;
+
     bool btnExportPressed = false;
+
     State currentState = TITLE;
-    int framCounter = -1;
+
+    int frameCounter = -1;
     int waitTime = 60;
 
     int selectedSortTech = 0;
@@ -97,9 +115,10 @@ int main() {
             GuiSetStyle(DEFAULT, TEXT_SIZE, defaultFontSize);
 
             const int comboBoxWidth =
-                // FIXME: Make the longest word dynamic and figure out what's
-                // missing in the calculation :(
-                MeasureText("Selection Sort", defaultFontSize) +
+                MeasureText(
+                    getLongestWord(sortingTechs, (int)sizeof(sortingTechs) /
+                                                     sizeof(sortingTechs[0])),
+                    defaultFontSize) +
                 GuiGetStyle(COMBOBOX, COMBO_BUTTON_WIDTH) +
                 GuiGetStyle(COMBOBOX, COMBO_BUTTON_SPACING) + defaultFontSize;
 
@@ -130,10 +149,10 @@ int main() {
 
             DrawText("Bubble Sort", 10, 5, 20, RED);
 
-            if (!sorted && framCounter == waitTime) {
-                framCounter = 0;
-                if (i < size) {
-                    for (int j = 0; j < size - i - 1; j++) {
+            if (!sorted && frameCounter == waitTime) {
+                frameCounter = 0;
+                if (curIdx < size) {
+                    for (int j = 0; j < size - curIdx - 1; j++) {
                         if (arr[j] > arr[j + 1]) {
                             const int temp = arr[j];
                             arr[j] = arr[j + 1];
@@ -142,55 +161,55 @@ int main() {
                     }
                     renderArray(arr, size);
 
-                    i++;
+                    curIdx++;
                 } else {
                     sorted = true;
                 }
             } else {
                 renderArray(arr, size);
 
-                framCounter++;
+                frameCounter++;
             }
         } break;
         case SELECTION_SORT: {
             ClearBackground(WHITE);
             DrawText("Selection Sort", 10, 5, 20, RED);
 
-            if (!sorted && framCounter == waitTime) {
-                framCounter = 0;
-                if (i < size) {
-                    int minIdx = i;
-                    for (int j = i + 1; j < size; j++) {
+            if (!sorted && frameCounter == waitTime) {
+                frameCounter = 0;
+                if (curIdx < size) {
+                    int minIdx = curIdx;
+                    for (int j = curIdx + 1; j < size; j++) {
                         if (arr[j] < arr[minIdx]) {
                             minIdx = j;
                         }
                     }
 
                     const int temp = arr[minIdx];
-                    arr[minIdx] = arr[i];
-                    arr[i] = temp;
+                    arr[minIdx] = arr[curIdx];
+                    arr[curIdx] = temp;
 
                     renderArray(arr, size);
 
-                    i++;
+                    curIdx++;
                 } else {
                     sorted = true;
                 }
             } else {
                 renderArray(arr, size);
 
-                framCounter++;
+                frameCounter++;
             }
         } break;
         case INSERTION_SORT: {
             ClearBackground(WHITE);
             DrawText("Insertion Sort", 10, 5, 20, RED);
 
-            if (!sorted && framCounter == waitTime) {
-                framCounter = 0;
-                if (i < size) {
-                    const int key = arr[i];
-                    int j = i - 1;
+            if (!sorted && frameCounter == waitTime) {
+                frameCounter = 0;
+                if (curIdx < size) {
+                    const int key = arr[curIdx];
+                    int j = curIdx - 1;
 
                     while (j >= 0 && arr[j] > key) {
                         arr[j + 1] = arr[j];
@@ -201,14 +220,14 @@ int main() {
 
                     renderArray(arr, size);
 
-                    i++;
+                    curIdx++;
                 } else {
                     sorted = true;
                 }
             } else {
                 renderArray(arr, size);
 
-                framCounter++;
+                frameCounter++;
             }
         } break;
         default: {
