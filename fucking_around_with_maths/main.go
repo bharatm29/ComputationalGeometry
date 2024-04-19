@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	k          int = -10
+	k          int = -14
 	circles    int = 11
 	resolution int = 100
-	inside     int = -1
-    showCircle bool = false
+	inside     int = 1
+    showCircle bool = true
 )
 
 type Orbit struct {

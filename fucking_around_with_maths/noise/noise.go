@@ -25,7 +25,7 @@ func main() {
 	xoff1 := 10000.0
 	noise := perlin.NewPerlinRandSource(2, 2, 3, rand.NewSource(rand.Int63()))
 
-    start := 0.0
+	start := 0.0
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -39,24 +39,16 @@ func main() {
 			mappedNoise2 := ((noise.Noise1D(xoff1) + 1) / 2)
 			y := int32(mappedNoise2 * float64(HEIGHT))
 
-			if x > WIDTH {
-				x = WIDTH
-			}
-
-			if x < 0 {
-				x = 0
-			}
-
 			xoff += 0.01
 			xoff1 += 0.02
 
 			rl.DrawText(fmt.Sprintf("(%d, %d)", x, y), 20, 20, 20, rl.Red)
-            rl.DrawLine(0, HEIGHT / 2, WIDTH, HEIGHT / 2, rl.DarkBlue)
+			rl.DrawLine(0, HEIGHT/2, WIDTH, HEIGHT/2, rl.DarkBlue)
 
 			var i int32
 
 			pathOff := start
-            path := []rl.Vector2{}
+			path := []rl.Vector2{}
 
 			for i = 0; i < WIDTH; i++ {
 				mappedNoise2 := ((noise.Noise1D(pathOff) + 1) / 2)
@@ -72,7 +64,7 @@ func main() {
 
 			}
 
-            start += 0.01
+			start += 0.01
 
 			// rl.DrawCircle(x, y, 20, rl.Beige)
 
