@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math"
 	"slices"
 
@@ -8,11 +9,11 @@ import (
 )
 
 const (
-	k          int = -14
-	circles    int = 11
-	resolution int = 100
-	inside     int = 1
-    showCircle bool = true
+	k          int  = -8
+	circles    int  = 11
+	resolution int  = 100
+	inside     int  = 1
+	showCircle bool = true
 )
 
 type Orbit struct {
@@ -102,9 +103,9 @@ func main() {
 				for orbitalOrbits != nil {
 					orbitalOrbits.Update()
 
-                    if showCircle {
-                        orbitalOrbits.Show()
-                    }
+					if showCircle {
+						orbitalOrbits.Show()
+					}
 
 					orbitalOrbits = orbitalOrbits.child
 				}
@@ -118,6 +119,8 @@ func main() {
 
 			rl.DrawLineStrip(path, rl.Orange)
 		}
+
+		rl.DrawText(fmt.Sprintf("%d", rl.GetFPS()), 20, 20, 20, rl.Blue)
 
 		rl.EndDrawing()
 	}

@@ -42,17 +42,19 @@ func main() {
 			for y := int32(0); y < rows; y++ {
 				xoff := start
 				for x := int32(0); x < cols; x++ {
-                    mappedNoise := ((noise.Noise2D(xoff, yoff) + 1) / 2)
+					mappedNoise := ((noise.Noise2D(xoff, yoff) + 1) / 2)
 					r := uint8(mappedNoise * 255)
 					xoff += inc
 
 					_ = rl.Color{R: r, G: r, B: r, A: r}
 
-                    v := vectorFromAngle(rl.Pi * mappedNoise) // Create a vector from the angle
-                    v = rl.Vector2Scale(v, float32(scale))
+					v := vectorFromAngle(rl.Pi * mappedNoise) // Create a vector from the angle
+					v = rl.Vector2Scale(v, float32(scale))
 
-                    // Draw the line
-                    rl.DrawLineV(rl.Vector2{X: float32(x * scale), Y: float32(y * scale)}, rl.Vector2{X: float32(x*scale) + v.X, Y: float32(y*scale) + v.Y}, rl.Black)
+					// Draw the line
+					rl.DrawLineV(rl.Vector2{X: float32(x * scale), Y: float32(y * scale)},
+						rl.Vector2{X: float32(x*scale) + v.X, Y: float32(y*scale) + v.Y},
+						rl.Black)
 
 					// rl.DrawRectangle(x*scale, y*scale, int32(scale), int32(scale), clr)
 				}
@@ -67,8 +69,6 @@ func main() {
 	}
 }
 
-
 func vectorFromAngle(angle float64) rl.Vector2 {
-    return rl.Vector2{X: float32(math.Cos(angle)), Y: float32(math.Sin(angle))}
+	return rl.Vector2{X: float32(math.Cos(angle)), Y: float32(math.Sin(angle))}
 }
-
