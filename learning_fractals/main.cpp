@@ -80,6 +80,10 @@ int main() {
             }
         }
         EndDrawing();
+
+        if (IsKeyPressed(KEY_S)) {
+            TakeScreenshot("png.png");
+        }
     }
 
     CloseWindow();
