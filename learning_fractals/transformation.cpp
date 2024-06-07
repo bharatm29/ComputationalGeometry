@@ -30,6 +30,7 @@ enum Fractals {
     SIEPENKSI,
     PENTADENTRITE,
     CRYSTAL,
+    TREE,
 };
 
 typedef struct {
@@ -121,6 +122,21 @@ const vector<Transformation> transformations = {
         },
 
         .probabilities = {.3333333333333333, .3333333333333333, .3333333333333333},
+
+        .iterations = 50000,
+
+        .isRangeDefined = false
+    },
+    Transformation {
+        .transformations = {
+            {0.1950, -.4880, .3440, 0.4430, .4431, 0.2453},
+            {.4620, .4140, -.2520, .3610, .2511, .5692},
+            {-.0580, -.07, .4530, -.110, .5976, .0969},
+            {-.0350, .07, -.4690, -.022, .4884, .5069},
+            {-.6370, 0, 0, .5010, .8562, .2513}
+        },
+
+        .probabilities = {.2, .2, .2, .2, .2},
 
         .iterations = 50000,
 

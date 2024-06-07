@@ -7,7 +7,7 @@ using std::vector;
 const int WIDTH = 800;
 const int HEIGHT = 800;
 
-const Fractals curFractal = CRYSTAL;
+const Fractals curFractal = TREE;
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "IFSs");
