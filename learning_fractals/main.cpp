@@ -1,3 +1,4 @@
+#include <iostream>
 #include <random>
 #include <raylib.h>
 #include <vector>
@@ -15,6 +16,8 @@ Define the affine transformations in the form: Ax + b
 
 The above is flatten to: [a, b, c, d, e, f] (row wise flattening)
 */
+
+/*FIXME: Fern
 vector<vector<float>> transformations = {{0.0, 0.0, 0.0, 0.16, 0.0, 0.0},
                                          {0.2, -0.26, 0.23, 0.22, 0.0, 1.6},
                                          {-0.15, 0.28, 0.26, 0.24, 0.0, 0.44},
@@ -22,6 +25,14 @@ vector<vector<float>> transformations = {{0.0, 0.0, 0.0, 0.16, 0.0, 0.0},
 
 // Probabilities for each transformation
 vector<float> probabilities = {0.01, 0.07, 0.07, 0.85};
+*/
+
+vector<vector<float>> transformations = {
+    {0.25, 0.0, 0.0, 0.25, 0.0, 0.5},
+    {0.823, -0.475, 0.475, 0.823, 0.301, -0.172}};
+
+// Probabilities for each transformation
+vector<float> probabilities = {0.073, 0.927};
 
 Vector2 applyTransformation(const vector<float> &transformation,
                             const Vector2 &point) {
@@ -62,6 +73,9 @@ int main() {
     Vector2 point = {0, 0};
     points.push_back(point);
 
+    float minX = 100000.0f, minY = 100000.0f;
+    float maxX = -100000.0f, maxY = -100000.0f;
+
     for (int _ = 0; _ < ITERATIONS; ++_) {
         // chose a random transformation using Inverse Transform Sampling
         const float random_number = gen_random_float(.0, 1.);
@@ -73,6 +87,7 @@ int main() {
             // if the random number is the probability distribution range
             if (random_number <= probabilitySum) {
                 point = applyTransformation(transformations[index], point);
+                std::cout<<index<<" "<<point.x<<" "<<point.y<<std::endl;
                 break;
             }
         }
@@ -83,6 +98,7 @@ int main() {
          * to the random value, thus taking it's index.
          */
 
+        /*FIXME:
         // map the point into our WIDTH x HEIGHT coordinate space
         Vector2 mappedPoint = point;
 
@@ -92,8 +108,26 @@ int main() {
                      0); // here we are mapping from HEIGHT-0 because we are
                          // converting from mathematical(y inc up) to computer
                          // coordinates system(y inc down).
+        */
 
-        points.push_back(mappedPoint);
+        points.push_back(point);
+
+        minX = std::min(minX, point.x);
+        minY = std::min(minY, point.y);
+
+        maxX = std::max(maxX, point.x);
+        maxY = std::max(maxY, point.y);
+    }
+
+    float scale = 0.f;
+
+    {
+        const float xRange = maxX - minX;
+        const float yRange = maxY - minY;
+
+        const float width_scale = (WIDTH / xRange);
+        const float height_scale = (HEIGHT / yRange);
+        scale = std::min(width_scale, height_scale);
     }
 
     // main loop
@@ -104,12 +138,17 @@ int main() {
 
             // Draw the points
             for (size_t i = 0; i < points.size(); ++i) {
+                Vector2 point = points[i];
+
+                point.x = (point.x - minX) * scale;
+                point.y = HEIGHT - (point.y - minY) * scale;
+
                 // rainbow gradient
-                float hue = mapRange(points[i].x, 0, WIDTH, 0, 360);
-                float value = mapRange(points[i].y, 0, HEIGHT, 1, 0);
+                float hue = mapRange(point.x, 0, WIDTH, 0, 360);
+                float value = mapRange(point.y, 0, HEIGHT, 1, 0);
                 Color color = ColorFromHSV(hue, 1.0f, value);
 
-                DrawPixelV(points[i], color);
+                DrawPixelV(point, color);
             }
         }
         EndDrawing();
