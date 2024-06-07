@@ -1,5 +1,4 @@
 #include "./transformation.cpp"
-#include <iostream>
 #include <raylib.h>
 #include <vector>
 
@@ -8,7 +7,7 @@ using std::vector;
 const int WIDTH = 800;
 const int HEIGHT = 800;
 
-const Fractals curFractal = SIEPENKSI;
+const Fractals curFractal = PENTADENTRITE;
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "IFSs");
@@ -70,6 +69,11 @@ int main() {
                 // rainbow gradient
                 float hue = mapRange(point.x, 0, WIDTH, 0, 360);
                 float value = mapRange(point.y, 0, HEIGHT, 1, 0);
+
+                if (IsKeyDown(KEY_SPACE)) {
+                    value = 1.f;
+                }
+
                 Color color = ColorFromHSV(hue, 1.0f, value);
 
                 DrawPixelV(point, color);
