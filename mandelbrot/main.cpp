@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
+#include <ostream>
 #include <raylib.h>
 
 const int WIDTH = 600;
@@ -23,22 +26,32 @@ int main() {
 
     SetTargetFPS(60);
 
-    float sliderA = -2.f;
-    float sliderB = 2.f;
+    // Zoomed in areas: [.4, .35], [-.55, -.5]
+    float sliderA = -2.f; // should be negative
+    float sliderB = 1.45f; // should be positive
 
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_MINUS)) {
-            sliderA -= .25f;
-            sliderB += .25f;
+        //H => decrease sliderA
+        if (IsKeyPressed(KEY_H)) {
+            sliderA -= .05f;
         }
 
-        if (IsKeyDown(KEY_LEFT_SHIFT) &&
-            IsKeyPressed(KEY_EQUAL)) { // SHIFT = is +
-            sliderA += .25f;
-            sliderB -= .25f;
+        //K => decrease sliderB
+        if (IsKeyPressed(KEY_K)) {
+            sliderB -= .05f;
+        }
+
+        //J => increase sliderA
+        if (IsKeyPressed(KEY_J)) {
+            sliderA += .05f;
+        }
+        //L => increase sliderB
+        if (IsKeyPressed(KEY_L)) {
+            sliderB -= .05f;
         }
 
         BeginDrawing();
+        ClearBackground(BLACK);
 
         {
             for (int x = 0; x <= WIDTH; x++) {
@@ -65,15 +78,25 @@ int main() {
                         }
                     }
 
-                    float brightness =
-                        mapRange(counter, 0.f, ITERATIONS, 0.f, 255);
 
-                    if (counter == ITERATIONS) {
-                        brightness = 0;
+                    Color color = BLACK;
+
+                    if (counter < ITERATIONS) {
+                        double quotient = (double)counter / (double)ITERATIONS;
+                        double c = std::clamp<double>(quotient, 0.f, 1.f);
+
+                        c = mapRange(c, .0f, 1.f, 0, 255);
+
+                        if (quotient > 0.5) {
+                            // Close to the mandelbrot set the color changes
+                            // from green to white
+                            color = Color{(unsigned char)c, 255, (unsigned char)c, 255};
+                        } else {
+                            // Far away it changes from black to green
+                            // color = GetColor(floatToHex(0, c, 0));
+                            color = Color{0,(unsigned char)c, 0, 255};
+                        }
                     }
-
-                    const Color color = {(unsigned char)brightness, (unsigned char)brightness,
-                                         (unsigned char)brightness, 255};
 
                     DrawPixel(x, y, color);
                 }
@@ -81,6 +104,10 @@ int main() {
         }
 
         EndDrawing();
+
+        if (IsKeyPressed(KEY_R)) {
+            TakeScreenshot("mandelbrot.png");
+        }
     }
 
     CloseWindow();
