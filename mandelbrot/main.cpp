@@ -1,12 +1,11 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
-#include <iostream>
-#include <ostream>
 #include <raylib.h>
+#include <raymath.h>
 
-const int WIDTH = 600;
-const int HEIGHT = 600;
+const int WIDTH = 800;
+const int HEIGHT = 800;
 
 const int ITERATIONS = 150;
 
@@ -27,32 +26,18 @@ int main() {
     SetTargetFPS(60);
 
     // Zoomed in areas: [.4, .35], [-.55, -.5]
-    float sliderA = -2.f; // should be negative
+    float sliderA = -2.f;  // should be negative
     float sliderB = 1.45f; // should be positive
 
-    while (!WindowShouldClose()) {
-        //H => decrease sliderA
-        if (IsKeyPressed(KEY_H)) {
-            sliderA -= .05f;
-        }
+    RenderTexture2D screen = LoadRenderTexture(WIDTH, HEIGHT);
 
-        //K => decrease sliderB
-        if (IsKeyPressed(KEY_K)) {
-            sliderB -= .05f;
-        }
+    Camera2D camera = { 0 };
+    camera.zoom = 1.0f;
 
-        //J => increase sliderA
-        if (IsKeyPressed(KEY_J)) {
-            sliderA += .05f;
-        }
-        //L => increase sliderB
-        if (IsKeyPressed(KEY_L)) {
-            sliderB -= .05f;
-        }
+    int zoomMode = 0;   // 0-Mouse Wheel, 1-Mouse Move
 
-        BeginDrawing();
+        BeginTextureMode(screen);
         ClearBackground(BLACK);
-
         {
             for (int x = 0; x <= WIDTH; x++) {
                 for (int y = 0; y <= HEIGHT; y++) {
@@ -78,7 +63,6 @@ int main() {
                         }
                     }
 
-
                     Color color = BLACK;
 
                     if (counter < ITERATIONS) {
@@ -90,11 +74,12 @@ int main() {
                         if (quotient > 0.5) {
                             // Close to the mandelbrot set the color changes
                             // from green to white
-                            color = Color{(unsigned char)c, 255, (unsigned char)c, 255};
+                            color = Color{(unsigned char)c, 255,
+                                          (unsigned char)c, 255};
                         } else {
                             // Far away it changes from black to green
                             // color = GetColor(floatToHex(0, c, 0));
-                            color = Color{0,(unsigned char)c, 0, 255};
+                            color = Color{0, (unsigned char)c, 0, 255};
                         }
                     }
 
@@ -102,7 +87,81 @@ int main() {
                 }
             }
         }
+        EndTextureMode();
 
+    while (!WindowShouldClose()) {
+        {
+        if (IsKeyPressed(KEY_ONE)) zoomMode = 0;
+        else if (IsKeyPressed(KEY_TWO)) zoomMode = 1;
+
+        // Translate based on mouse right click
+        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
+        {
+            Vector2 delta = GetMouseDelta();
+            delta = Vector2Scale(delta, -1.0f/camera.zoom);
+            camera.target = Vector2Add(camera.target, delta);
+        }
+
+        if (zoomMode == 0)
+        {
+            // Zoom based on mouse wheel
+            float wheel = GetMouseWheelMove();
+            if (wheel != 0)
+            {
+                // Get the world point that is under the mouse
+                Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+
+                // Set the offset to where the mouse is
+                camera.offset = GetMousePosition();
+
+                // Set the target to match, so that the camera maps the world space point 
+                // under the cursor to the screen space point under the cursor at any zoom
+                camera.target = mouseWorldPos;
+
+                // Zoom increment
+                float scaleFactor = 1.0f + (0.25f*fabsf(wheel));
+                if (wheel < 0) scaleFactor = 1.0f/scaleFactor;
+                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125f, 64.0f);
+            }
+        }
+        else
+        {
+            // Zoom based on mouse left click
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+            {
+                // Get the world point that is under the mouse
+                Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera);
+
+                // Set the offset to where the mouse is
+                camera.offset = GetMousePosition();
+
+                // Set the target to match, so that the camera maps the world space point 
+                // under the cursor to the screen space point under the cursor at any zoom
+                camera.target = mouseWorldPos;
+            }
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                // Zoom increment
+                float deltaX = GetMouseDelta().x;
+                float scaleFactor = 1.0f + (0.01f*fabsf(deltaX));
+                if (deltaX < 0) scaleFactor = 1.0f/scaleFactor;
+                camera.zoom = Clamp(camera.zoom*scaleFactor, 0.125f, 64.0f);
+            }
+        }
+        }
+
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        BeginMode2D(camera);
+
+        DrawTexture(screen.texture, 0, 0, WHITE);
+
+        // Draw a reference circle
+        // DrawCircle(GetScreenWidth()/2, GetScreenHeight()/2, 50, MAROON);
+
+        EndMode2D();
         EndDrawing();
 
         if (IsKeyPressed(KEY_R)) {
