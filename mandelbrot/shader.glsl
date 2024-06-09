@@ -26,8 +26,14 @@ void main()
     float a = map(gl_FragCoord.x, 0, WIDTH, minRange, maxRange);
     float b = map(gl_FragCoord.y, 0, HEIGHT, minRange, maxRange);
 
-    const float ca = a;
-    const float cb = b;
+    // for mandelbrot
+    // const float ca = a;
+    // const float cb = b;
+
+    // for julia sets
+    // [−0.70176 − 0.3842i], [0.285 + 0.01i], [0.4 + 0.4i], [-0.8 + 0.156i], [−0.7269 + 0.1889i], [−0.835 − 0.2321i]
+    const float ca = -0.835;
+    const float cb = -0.2321;
 
     int counter = 0;
 

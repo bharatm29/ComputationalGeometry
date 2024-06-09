@@ -12,8 +12,8 @@ int main() {
     SetTargetFPS(60);
 
     // Zoomed in areas: [.4, .35], [-.55, -.5]
-    float minRange = -2.f;  // should be negative
-    float maxRange = 1.45f; // should be positive
+    float minRange = -1.5f;  // should be negative
+    float maxRange = 1.5f; // should be positive
 
     Shader shader = LoadShader(0, "shader.glsl");
 
