@@ -13,7 +13,7 @@ struct Simulator {
     vector<Verlet> objs;
 
     void update(const float dt) {
-        const unsigned int substep = 8;
+        const unsigned int substep = 2;
         const float subDt = dt / (substep * 1.f);
 
         for (unsigned int i(substep); i--;) {
