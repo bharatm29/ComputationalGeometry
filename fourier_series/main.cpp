@@ -91,6 +91,10 @@ int main() {
         }
 
         EndDrawing();
+
+        if (IsKeyPressed(KEY_R)) {
+            TakeScreenshot("fourier.png");
+        }
     }
 
     CloseWindow();

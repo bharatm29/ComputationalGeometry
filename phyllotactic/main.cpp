@@ -5,8 +5,8 @@
 
 using namespace std;
 
-const int WIDTH = 1000;
-const int HEIGHT = 1000;
+const int WIDTH = 800;
+const int HEIGHT = 800;
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Phyllotactic");
@@ -18,7 +18,7 @@ int main() {
     vector<pair<int, pair<int, int>>> points;
 
     for (int n = 0; n < 1000; n++) {
-        double phi = n * 137.5;
+        double phi = n * 137.6;
         double rad = c * sqrt(n);
 
         double x = (WIDTH / 2.0) + rad * cos(phi * PI / 180);
@@ -37,7 +37,7 @@ int main() {
         ClearBackground(GetColor(0x403d3d00));
         BeginMode2D(camera);
 
-        DrawText("Planar Model", (WIDTH / 2.0) - (MeasureText("Planar Model", 30) / 2.0), 100, 30, WHITE);
+        DrawText("Planar Model - Phyllotactic", (WIDTH / 2.0) - (MeasureText("Planar Model - Phyllotactic", 30) / 2.0), 100, 30, WHITE);
 
         camera.zoom = expf(logf(camera.zoom) + ((float)GetMouseWheelMove()*0.1f));
         // camera.target = GetMousePosition();
@@ -52,6 +52,10 @@ int main() {
 
         EndMode2D();
         EndDrawing();
+
+        if (IsKeyPressed(KEY_R)) {
+            TakeScreenshot("planar_model.png");
+        }
     }
 
     CloseWindow();

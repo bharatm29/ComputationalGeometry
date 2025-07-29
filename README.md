@@ -1,6 +1,6 @@
 ## Fractals
 
-This repository contains my implementation of some famous fractals.
+This repository contains my implementation of some famous fractals and shapes.
 
 This was done using Raylib/C++.
 
@@ -32,3 +32,12 @@ This was done using Raylib/C++.
 ##### Spiral
 
 ![spiral](./showcase/ifsSpiral.png)
+
+---
+#### Fourier Series
+![fourier](./showcase/fourier.png)
+---
+
+#### Phyllotactic - Planar Model
+![planar](./showcase/planar_model.png)
+---
